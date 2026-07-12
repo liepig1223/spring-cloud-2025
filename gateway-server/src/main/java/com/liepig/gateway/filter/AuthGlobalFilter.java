@@ -69,7 +69,8 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (Exception e) {
-            return unauthorized(exchange, "Invalid token: " + e.getMessage());
+            log.warn("JWT validation failed: {}", e.getMessage());
+            return unauthorized(exchange, "Invalid token");
         }
 
         // Check blacklist (Redis)

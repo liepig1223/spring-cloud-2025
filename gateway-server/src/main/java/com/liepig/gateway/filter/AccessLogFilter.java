@@ -29,7 +29,7 @@ public class AccessLogFilter implements GlobalFilter, Ordered {
             if (upstream == null) upstream = "unknown";
 
             // Structured JSON log line for ELK/Loki ingestion
-            accessLog.info("{{\"traceId\":\"{}\",\"method\":\"{}\",\"path\":\"{}\",\"status\":{},\"durationMs\":{},\"upstream\":\"{}\"}}",
+            accessLog.info("{\"traceId\":\"{}\",\"method\":\"{}\",\"path\":\"{}\",\"status\":{},\"durationMs\":{},\"upstream\":\"{}\"}",
                     traceId, method, path, status, duration, upstream);
         });
     }

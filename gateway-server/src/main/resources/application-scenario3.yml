@@ -1,6 +1,9 @@
 spring:
   cloud:
     gateway:
+      default-filters:
+        - RemoveResponseHeader=Server
+        - RemoveResponseHeader=X-Powered-By
       discovery:
         locator:
           enabled: true

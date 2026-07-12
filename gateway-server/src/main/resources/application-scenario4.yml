@@ -1,0 +1,85 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
+            - ValidateHeader=X-Client-Version
+            - AddResponseHeader=X-Gateway-Node, gateway-server
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@userKeyResolver}"
+
+        - id: order-service-route
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=2
+            - ValidateHeader=X-Client-Version
+            - AddResponseHeader=X-Gateway-Node, gateway-server
+            - name: CircuitBreaker
+              args:
+                name: orderServiceCB
+                fallbackUri: forward:/fallback/order-service
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+                methods: POST,PUT
+                backoff:
+                  firstBackoff: 500ms
+                  maxBackoff: 2000ms
+                  factor: 2
+
+        - id: auth-service-route
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=2
+
+        - id: admin-route
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/**
+            - RemoteAddr=127.0.0.1,192.168.0.0/16
+          filters:
+            - StripPrefix=1
+
+      # Global HTTP client timeouts
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5s
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+# Resilience4J CircuitBreaker configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+    instances:
+      orderServiceCB:
+        base-config: default
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s

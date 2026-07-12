@@ -1,0 +1,12 @@
+server:
+  port: 10072
+spring:
+  application:
+    name: order-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    loadbalancer:
+      nacos:
+        enabled: true

@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
+            - ValidateHeader=X-Client-Version
+            - AddResponseHeader=X-Gateway-Node, gateway-server
+
+        - id: order-service-route
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=2
+            - ValidateHeader=X-Client-Version
+            - AddResponseHeader=X-Gateway-Node, gateway-server
+
+        - id: auth-service-route
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=2
+            # auth 路由不做 Client-Version 校验（登录接口需公开访问）

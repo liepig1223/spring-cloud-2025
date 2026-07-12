@@ -1,0 +1,21 @@
+server:
+  port: 10070
+spring:
+  application:
+    name: server-10070
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      nacos:
+        enabled: true
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        group: DEFAULT_GROUP
+      server-addr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config-example.properties?refreshEnabled=true

@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  profiles:
+    active: scenario1
   application:
     name: gateway-server
   cloud:
@@ -10,3 +12,7 @@ spring:
     loadbalancer:
       nacos:
         enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: scenario1
+    active: scenario2
   application:
     name: gateway-server
   cloud:

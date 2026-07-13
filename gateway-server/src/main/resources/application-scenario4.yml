@@ -13,7 +13,9 @@ spring:
                 - Path=/api/user/**
               filters:
                 - StripPrefix=2
-                - ValidateHeader=X-Client-Version
+                - name: ValidateHeader
+                  args:
+                    headerName: X-Client-Version
                 - AddResponseHeader=X-Gateway-Node, gateway-server
                 - name: RequestRateLimiter
                   args:
@@ -27,7 +29,9 @@ spring:
                 - Path=/api/order/**
               filters:
                 - StripPrefix=2
-                - ValidateHeader=X-Client-Version
+                - name: ValidateHeader
+                  args:
+                    headerName: X-Client-Version
                 - AddResponseHeader=X-Gateway-Node, gateway-server
                 - name: CircuitBreaker
                   args:

@@ -28,9 +28,4 @@ public class GatewayRateLimiterConfig {
         };
     }
 
-    @Bean("ipKeyResolver")
-    public KeyResolver ipKeyResolver() {
-        return exchange -> Mono.just("ip:" + Objects.requireNonNull(
-                exchange.getRequest().getRemoteAddress()).getAddress().getHostAddress());
-    }
 }

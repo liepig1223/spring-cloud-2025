@@ -19,7 +19,7 @@ spring:
                 - AddResponseHeader=X-Gateway-Node, gateway-server
                 - name: RequestRateLimiter
                   args:
-                    redis-rate-limiter.replenishRate: 5
+                    redis-rate-limiter.replenishRate: 5 #注意要用新版的redis，之前使用window旧版redis出错
                     redis-rate-limiter.burstCapacity: 10
                     key-resolver: "#{@userKeyResolver}"
 
